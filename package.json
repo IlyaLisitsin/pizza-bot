@@ -21,5 +21,8 @@
     "express": "^4.16.4",
     "nodemon": "^1.18.10",
     "puppeteer": "^1.13.0"
+  },
+  "devDependencies": {
+    "ymaps": "^0.1.1"
   }
 }
