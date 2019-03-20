@@ -21,7 +21,7 @@ const init = () => {
     ];
 
     const polygonOnMapCollection = polygonCordCollection.map(cordArr => {
-        const polygon =   new ymaps.geometry.Polygon(
+        const polygon = new ymaps.geometry.Polygon(
             [poligonCordNormalizer(cordArr)],
             {
                 fillColor: '#00FF0088',
@@ -41,6 +41,8 @@ const init = () => {
 
         console.log(isInDeliveryZone)
     });
-}
+
+    fetch('https://geocode-maps.yandex.ru/1.x/?apikey=e03a2079-6ffc-49fe-80c6-708a3e02a8a8&format=json&geocode=Любимова+33&results=1').then(res => res.json()).then(result => console.log(result))
+};
 
 ymaps.ready(init);

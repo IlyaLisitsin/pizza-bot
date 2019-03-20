@@ -1,38 +1,32 @@
-// const puppeteer = require('puppeteer');
-//
-// const pageEvalueteCb = () => {
-//     const elements = document.querySelectorAll('.pizzas h3 a');
-//     return Array.from(elements).map(el => el.innerText);
-// };
-//
-// (async () => {
-//     const browser = await puppeteer.launch({ headless: false });
-//     const page = await browser.newPage();
-//     page.setViewport({ height: 1200, width: 1200 });
-//     await page.goto('https://pzz.by/');
-//
-//     const pizzasTitleCollection = await page.evaluate(pageEvalueteCb);
-//
-//     await page.setRequestInterception(true);
-//
-//     page.on('request', (req) => {
-//         if (req.resourceType() === 'xhr') {
-//             console.log(req)
-//         }
-//         // if (req.resourceType() === 'image') {
-//         //     // req.abort();
-//         // } else {
-//         //     req.continue();
-//         // }
-//
-//         req.continue()
-//     });
-//
-//
-//     // console.log(pizzasTitleCollection)
-//
-//
-//     await page.screenshot({ path: 'example.png' });
-//
-//     // await browser.close();
-// })();
+const tgToken = '';
+const Telegraf = require('telegraf');
+const session = require('telegraf/session');
+
+const UserEmulatorService = require('./user-emulator.service');
+const { ChoseStreetScene, echoScene } = require('./telegram/scenes.telegram');
+const { startingMarkup } = require('./telegram/markup.telegram');
+const router = require('./telegram/router.telegram');
+
+const Stage = require('telegraf/stage');
+
+const bot = new Telegraf(tgToken);
+const stage = new Stage([ChoseStreetScene], { ttl: 10 });
+bot.use(session());
+bot.use(stage.middleware());
+
+// bot.use(session({ ttl: 10 }))
+
+bot.start(async (ctx) => {
+    ctx.session = {};
+    ctx.session.emulatorInstance = await UserEmulatorService.build();
+
+    // return ctx.reply(`Value: <b>${ctx.session.value}</b>`, startingMarkup)
+    return ctx.reply('Привет! Откуда закажем хрючево?', startingMarkup)
+});
+
+bot.on('callback_query', router);
+// bot.on('text', ctx => ctx.reply('ты гнида ебучая'))
+// bot.command('greeter', enter('greeter'))
+// bot.command('echo', enter('echo'))
+bot.launch();
+
