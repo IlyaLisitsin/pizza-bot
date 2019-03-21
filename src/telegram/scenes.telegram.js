@@ -10,10 +10,12 @@ ChoseStreetScene.enter(ctx => ctx.reply('Введи название улицы,
 // ChoseStreetScene.hears('hi', enter('greeter'))
 
 ChoseStreetScene.on('text', async ctx => {
-    const streetVariantList = await ctx.session.emulatorInstance.getStreetVariants(ctx.message.text);
-    const markup = streetVariantsMarkupGenerator(streetVariantList.slice(0, 10)); // Only 10 first variants. Purpose - not to overload tg markup
+    if (ctx.session.emulatorInstance) {
+        const streetVariantList = await ctx.session.emulatorInstance.getStreetVariants(ctx.message.text);
+        const markup = streetVariantsMarkupGenerator(streetVariantList.slice(0, 10)); // Only 10 first variants. Purpose - not to overload tg markup
 
-    ctx.reply('Что-то есть в этом списке?', markup)
+        ctx.reply('Что-то есть в этом списке?', markup)
+    }
 });
 
 // const ChoseHouseScene = new Scene('chose-street-scene');

@@ -129,7 +129,10 @@ class UserEmulatorService {
 
     async getPizzasList() {
         const pizzasCollection = await this.page.evaluate(getLisizzasPizzaList);
-        return pizzasCollection.;
+        return pizzasCollection.map(el => {
+            const { id, title, anonce, medium_price, thin_price, big_price, photo1 } = el;
+            return { id, title, anonce, medium_price, thin_price, big_price, photo1 };
+        });
     }
 
     destroy() {

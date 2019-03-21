@@ -1,4 +1,4 @@
-const tgToken = '';
+const tgToken = '829401034:AAF6WgoZMD_dYMMKUuI9bEGZvpqniRRLzzg';
 const Telegraf = require('telegraf');
 const session = require('telegraf/session');
 
