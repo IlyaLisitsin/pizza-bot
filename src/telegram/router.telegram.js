@@ -2,6 +2,11 @@ const Router = require('telegraf/router');
 
 const { houseVariantsMarkupGenerator, pizzaListMarkupGenerator, pizzaSizeMarkupGenerator } = require('./markup.telegram');
 
+const replyWithPhoto = (ctx, path) => {
+    ctx.replyWithChatAction('upload_photo');
+    return ctx.replyWithPhoto({ url: path })
+};
+
 const router = new Router(({ callbackQuery }) => {
     if (!callbackQuery.data) return;
 
@@ -15,10 +20,11 @@ const router = new Router(({ callbackQuery }) => {
     }
 });
 
-router.on('chose-delivery-action', ctx => {
+router.on('chose-delivery-action', async ctx => {
     ctx.session.deliveryService = ctx.state.value;
-    ctx.scene.enter('chose-street-scene');
-    return ctx.reply(`Выбрано ${ctx.session.deliveryService}`)
+    // ctx.scene.enter('input-street-scene');
+    await ctx.reply(`Выбрано ${ctx.session.deliveryService}`)
+    return ctx.scene.enter('input-info-1-scene');
 });
 
 router.on('chose-street-action', async ctx => {
@@ -27,7 +33,7 @@ router.on('chose-street-action', async ctx => {
     if (ctx.session.emulatorInstance) {
         const housesVariantList = await ctx.session.emulatorInstance.getHousesVariants(ctx.session.street.id);
         const housesListMarkup = houseVariantsMarkupGenerator(housesVariantList);
-        return ctx.reply('Теперь выбери номер дома', housesListMarkup);
+        await ctx.reply('Теперь выбери номер дома', housesListMarkup);
     }
 });
 
@@ -39,7 +45,7 @@ router.on('chose-house-action', async ctx => {
 
         ctx.session.pizzasCollection = pizzasList.reduce((acc, next) => {
             const { title, anonce, photo1, medium_price, thin_price, big_price } = next;
-            acc[next.id] = { title, anonce, sizes: [{medium_price}, {thin_price}, {big_price}], photo1 };
+            acc[next.id] = { title, anonce, sizes: [{ medium: medium_price }, { thin: thin_price }, { big: big_price }], photo1 };
             return acc
         }, {});
 
@@ -50,27 +56,37 @@ router.on('chose-house-action', async ctx => {
 
 router.on('chose-pizza-type-action', async ctx => {
     if (ctx.session.pizzasCollection) {
-        ctx.session.pizzaOrder = ctx.session.pizzasCollection[ctx.state.value];
+        ctx.session.selectedPizza = ctx.session.pizzasCollection[ctx.state.value];
 
-        const pizzaTypeMarkup = pizzaSizeMarkupGenerator(ctx.session.pizzaOrder.sizes)
+        const pizzaTypeMarkup = pizzaSizeMarkupGenerator(ctx.session.selectedPizza.sizes)
 
         await ctx.reply('Хорошая');
-        await replyWithPhoto(ctx, ctx.session.pizzaOrder.photo1);
+        await replyWithPhoto(ctx, ctx.session.selectedPizza.photo1);
         await ctx.reply('Какого размера?', pizzaTypeMarkup)
     }
 });
 
-const replyWithPhoto = (ctx, path) => {
-    ctx.replyWithChatAction('upload_photo');
-    return ctx.replyWithPhoto({ url: path })
-};
+router.on('chose-pizza-size-action', async ctx => {
+    const pizzaSizeParts = ctx.state.value.split('+');
+    ctx.session.size = pizzaSizeParts[0];
+    ctx.session.price = pizzaSizeParts[1];
 
-// function editText (ctx) {
-//     if (ctx.session.value === 42) {
-//         return ctx.answerCbQuery('Answer to the Ultimate Question of Life, the Universe, and Everything', true)
-//             .then(() => ctx.editMessageText('🎆'))
-//     }
-//     return ctx.editMessageText(`Value: <b>${ctx.session.value}</b>`, markup).catch(() => undefined)
-// }
+    if (ctx.session.selectedPizza) {
+        await ctx.reply(`Выбрана ${ctx.session.size} ${ctx.session.selectedPizza.title}`);
+        await ctx.reply('Осталось записать еще немного твоих данных, и все будет готово к заказу!');
+        // await ctx.scene.enter('input-name-scene');
+        // await ctx.scene.enter('create');
+        await ctx.scene.enter('create');
+    }
+});
+
+router.on('chose-payment-action', async ctx => {
+    ctx.session.payment = ctx.state.value;
+    if (ctx.session.emulatorInstance) {
+        await ctx.session.emulatorInstance.performOrder(ctx.session);
+        // await ctx.reply('Отличный выбор, пока идем неплохо!');
+        // await ctx.reply('Выбирай пиццу, и продолжим ХЕНДЛИТЬ ТВОИ ИНПУТЫ', pizzasListMarkup)
+    }
+});
 
 module.exports = router;

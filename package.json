@@ -22,11 +22,11 @@
     "fuse.js": "^3.4.4",
     "node-fetch": "^2.3.0",
     "nodemon": "^1.18.10",
-    "puppeteer": "^1.13.0",
-    "telegraf": "^3.27.1"
+    "puppeteer": "^1.13.0"
   },
   "devDependencies": {
     "https": "^1.0.0",
+    "telegraf": "^3.27.1",
     "winston": "^3.2.1",
     "ymaps": "^0.1.1"
   }

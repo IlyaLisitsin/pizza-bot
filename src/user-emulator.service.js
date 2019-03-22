@@ -15,16 +15,35 @@ const requestInterceptor = (req) => {
 };
 
 
-const deliveryRequestsTrigger = async () => {
+const deliveryRequestsTrigger = async (size, id, street, house, name, number, flat) => {
+
+    console.log('evalaaaaaaaaaaa')
+    // await fetch(`https://pzz.by/api/v1/basket/update-address`, {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    //     },
+    //     body: 'street=%D0%9B%D1%8E%D0%B1%D0%B8%D0%BC%D0%BE%D0%B2%D0%B0+%D0%BF%D1%80%D0%BE%D1%81%D0%BF.&house=33',
+    // })
+    //     .then(res => res.json())
+    //     .then(res => console.log('update address', res));
+
+    console.log(street, house, name, number, flat, id, size)
+
+    const normalizedStreet = street.split(' ').join('+');
+
+    const requestBodyString = `name=${name}&flat=${flat}&entrance=&floor=&intercom=&comment=&preorder_date=&preorder_time=&payment=charge&renting=&phone=%2B${number}&street=${normalizedStreet}&house=${house}`;
+
+    const test = "name=%D0%B8%D0%BB%D1%8C%D1%8F&flat=1&entrance=&floor=&intercom=&comment=&preorder_date=&preorder_time=&payment=charge&renting=&phone=%2B375293922930&street=%D0%9B%D1%8E%D0%B1%D0%B8%D0%BC%D0%BE%D0%B2%D0%B0+%D0%BF%D1%80%D0%BE%D1%81%D0%BF.&house=33"
     await fetch(`https://pzz.by/api/v1/basket/update-address`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
         },
-        body: 'street=%D0%9B%D1%8E%D0%B1%D0%B8%D0%BC%D0%BE%D0%B2%D0%B0+%D0%BF%D1%80%D0%BE%D1%81%D0%BF.&house=33',
-    })
-        .then(res => res.json())
-        .then(res => console.log('update address', res));
+            body: encodeURI(requestBodyString),
+        });
+        // .then(res => res.json())
+        // .then(res => console.log('update address', res));
 
     await fetch('https://pzz.by/api/v1/basket/add-item', {
         method: 'POST',
@@ -36,25 +55,41 @@ const deliveryRequestsTrigger = async () => {
         .then(res => res.json())
         .then(res => console.log('добавил ранч', res))
 
-    await fetch("https://pzz.by/api/v1/basket/update-address",
-        {"credentials":"include",
-            "headers": {
-                "accept":"application/json, text/javascript, */*; q=0.01",
-                "accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7",
-                "cache-control":"no-cache",
-                "content-type":"application/x-www-form-urlencoded; charset=UTF-8",
-                "pragma":"no-cache","x-requested-with":"XMLHttpRequest"
-            },
-            "referrer":"https://pzz.by/cart",
-            "referrerPolicy":"no-referrer-when-downgrade",
-            "body":"name=%D0%B8%D0%BB%D1%8C%D1%8F&flat=1&entrance=&floor=&intercom=&comment=&preorder_date=&preorder_time=&payment=charge&renting=&phone=%2B375293922930&street=%D0%9B%D1%8E%D0%B1%D0%B8%D0%BC%D0%BE%D0%B2%D0%B0+%D0%BF%D1%80%D0%BE%D1%81%D0%BF.&house=33",
-            "method":"POST",
-            "mode":"cors"
-        });
+    // await fetch("https://pzz.by/api/v1/basket/update-address",
+    //     {
+    //         // "credentials":"include",
+    //         method: 'POST',
+    //         // headers: {
+    //         //     "accept":"application/json, text/javascript, */*; q=0.01",
+    //         //     "accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7",
+    //         //     "cache-control":"no-cache",
+    //         //     "content-type":"application/x-www-form-urlencoded; charset=UTF-8",
+    //         //     "pragma":"no-cache","x-requested-with":"XMLHttpRequest"
+    //         // },
+    //         // "referrer":"https://pzz.by/cart",
+    //         // "referrerPolicy":"no-referrer-when-downgrade",
+    //         // "body":"name=%D0%B8%D0%BB%D1%8C%D1%8F&flat=1&entrance=&floor=&intercom=&comment=&preorder_date=&preorder_time=&payment=charge&renting=&phone=%2B375293922930&street=%D0%9B%D1%8E%D0%B1%D0%B8%D0%BC%D0%BE%D0%B2%D0%B0+%D0%BF%D1%80%D0%BE%D1%81%D0%BF.&house=33",
+    //         // "mode":"cors"
+    //     });
 
-    await fetch("https://pzz.by/api/v1/basket/save", {"credentials":"include","headers":{"accept":"application/json, text/javascript, */*; q=0.01","accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7","cache-control":"no-cache","pragma":"no-cache","x-requested-with":"XMLHttpRequest"},"referrer":"https://pzz.by/cart","referrerPolicy":"no-referrer-when-downgrade","body":null,"method":"POST","mode":"cors"});
+    // await fetch("https://pzz.by/api/v1/basket/save", {"credentials":"include","headers":{"accept":"application/json, text/javascript, */*; q=0.01","accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7","cache-control":"no-cache","pragma":"no-cache","x-requested-with":"XMLHttpRequest"},"referrer":"https://pzz.by/cart","referrerPolicy":"no-referrer-when-downgrade","body":null,"method":"POST","mode":"cors"});
+    // await fetch("https://pzz.by/api/v1/basket/save", {
+    //     // "credentials":"include",
+    //     method: 'POST',
+    //     // headers:{
+    //     //     "accept":"application/json, text/javascript, */*; q=0.01",
+    //     //     "accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7",
+    //     //     "cache-control":"no-cache","pragma":"no-cache",
+    //     //     "x-requested-with":"XMLHttpRequest"
+    //     // },
+    //     // "referrer":"https://pzz.by/cart",
+    //     // "referrerPolicy":"no-referrer-when-downgrade",
+    //     // "body":null,
+    //     // "mode":"cors"
+    // });
 
-    await fetch("https://pzz.by/api/v1/basket", {"credentials":"include","headers":{"accept":"application/json, text/javascript, */*; q=0.01","accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7","cache-control":"no-cache","pragma":"no-cache","x-requested-with":"XMLHttpRequest"},"referrer":"https://pzz.by/cart","referrerPolicy":"no-referrer-when-downgrade","body":null,"method":"GET","mode":"cors"});
+    // await fetch("https://pzz.by/api/v1/basket", {"credentials":"include","headers":{"accept":"application/json, text/javascript, */*; q=0.01","accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7","cache-control":"no-cache","pragma":"no-cache","x-requested-with":"XMLHttpRequest"},"referrer":"https://pzz.by/cart","referrerPolicy":"no-referrer-when-downgrade","body":null,"method":"GET","mode":"cors"});
+    // await fetch('https://pzz.by/api/v1/basket');
 };
 
 const getLisizzaHousesCollection = async streetId => {
@@ -123,7 +158,7 @@ class UserEmulatorService {
     }
 
     async getHousesVariants(streetId) {
-        const housesCollection = await this.page.evaluate(getLisizzaHousesCollection, streetId)
+        const housesCollection = await this.page.evaluate(getLisizzaHousesCollection, streetId);
         return housesCollection.map(hoseInfo => hoseInfo.title)
     }
 
@@ -135,8 +170,14 @@ class UserEmulatorService {
         });
     }
 
-    destroy() {
-        this.browser.close();
+    async performOrder(orderDetails) {
+        const { size, selectedPizza: { id }, street: { title }, house, name, number, flat } = orderDetails;
+        await this.page.evaluate(deliveryRequestsTrigger, size, id, title, house, name, number, flat);
+    }
+
+    async destroy() {
+        console.log('me destroin')
+        await this.browser.close();
     }
 }
 
