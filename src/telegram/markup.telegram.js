@@ -12,6 +12,23 @@ const startingMarkup = Extra
         m.callbackButton('ПиццаЛисицца', 'chose-delivery-action:pzz.by'),
     ], { columns: 2 }));
 
+const numberMaurkupGenerator = actionType => Extra
+    .HTML()
+    .markup(m => m.inlineKeyboard([
+        m.callbackButton('1', `${actionType}:1`),
+        m.callbackButton('2', `${actionType}:2`),
+        m.callbackButton('3', `${actionType}:3`),
+        m.callbackButton('4', `${actionType}:4`),
+        m.callbackButton('5', `${actionType}:5`),
+        m.callbackButton('6', `${actionType}:6`),
+        m.callbackButton('7', `${actionType}:7`),
+        m.callbackButton('8', `${actionType}:8`),
+        m.callbackButton('9', `${actionType}:9`),
+        m.callbackButton('0', `${actionType}:0`),
+        m.callbackButton('удалить', `${actionType}:удалить`),
+        m.callbackButton('готово', `${actionType}:готово`),
+    ], { columns: 5 }));
+
 // TODO: обработать ветку "в списке ничего нет" + пусой список!!
 // TODO: экранировать скобки тире и проч!
 const streetVariantsMarkupGenerator = streetVariantList => Extra
@@ -54,4 +71,5 @@ module.exports = {
     houseVariantsMarkupGenerator,
     pizzaListMarkupGenerator,
     pizzaSizeMarkupGenerator,
+    numberMaurkupGenerator,
 };

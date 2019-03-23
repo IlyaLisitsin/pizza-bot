@@ -16,13 +16,12 @@ const stage = new Stage([create, InputInfoPart1Scene], { ttl: 10 });
 bot.use(session());
 bot.use(stage.middleware());
 
-// bot.use(session({ ttl: 10 }))
-
 bot.start(async (ctx) => {
     // console.log(ctx.session)
     await ctx.session.emulatorInstance && ctx.session.emulatorInstance.destroy();
-    console.log('starrt', ctx.session.emulatorInstance)
     ctx.session = {};
+    ctx.session.number = '37529';
+    ctx.session.flat = '';
 
     ctx.session.emulatorInstance = await UserEmulatorService.build();
     await ctx.scene.leave()
@@ -31,8 +30,5 @@ bot.start(async (ctx) => {
 });
 
 bot.on('callback_query', router);
-// bot.on('text', ctx => ctx.reply('ты гнида ебучая'))
-// bot.command('greeter', enter('greeter'))
-// bot.command('echo', enter('echo'))
 bot.launch();
 

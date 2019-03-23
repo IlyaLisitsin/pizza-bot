@@ -16,8 +16,12 @@ const requestInterceptor = (req) => {
 
 
 const deliveryRequestsTrigger = async (size, id, street, house, name, number, flat) => {
-
-    console.log('evalaaaaaaaaaaa')
+    const sizesDictionary = {
+        Большая: 'big',
+        Средняя: 'medium',
+        Маленькая: 'thin',
+    }
+    console.log(sizesDictionary[size])
     // await fetch(`https://pzz.by/api/v1/basket/update-address`, {
     //     method: 'POST',
     //     headers: {
@@ -40,17 +44,16 @@ const deliveryRequestsTrigger = async (size, id, street, house, name, number, fl
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
         },
-            body: encodeURI(requestBodyString),
+            // body: encodeURI(requestBodyString),
+            body: requestBodyString,
         });
-        // .then(res => res.json())
-        // .then(res => console.log('update address', res));
 
     await fetch('https://pzz.by/api/v1/basket/add-item', {
         method: 'POST',
         headers: {
             'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
         },
-        body: 'type=pizza&id=3&size=medium&dough=thin',
+        body: `type=pizza&id=${id}&size=${sizesDictionary[size]}&dough=thin`,
     })
         .then(res => res.json())
         .then(res => console.log('добавил ранч', res))
@@ -73,23 +76,23 @@ const deliveryRequestsTrigger = async (size, id, street, house, name, number, fl
     //     });
 
     // await fetch("https://pzz.by/api/v1/basket/save", {"credentials":"include","headers":{"accept":"application/json, text/javascript, */*; q=0.01","accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7","cache-control":"no-cache","pragma":"no-cache","x-requested-with":"XMLHttpRequest"},"referrer":"https://pzz.by/cart","referrerPolicy":"no-referrer-when-downgrade","body":null,"method":"POST","mode":"cors"});
-    // await fetch("https://pzz.by/api/v1/basket/save", {
-    //     // "credentials":"include",
-    //     method: 'POST',
-    //     // headers:{
-    //     //     "accept":"application/json, text/javascript, */*; q=0.01",
-    //     //     "accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7",
-    //     //     "cache-control":"no-cache","pragma":"no-cache",
-    //     //     "x-requested-with":"XMLHttpRequest"
-    //     // },
-    //     // "referrer":"https://pzz.by/cart",
-    //     // "referrerPolicy":"no-referrer-when-downgrade",
-    //     // "body":null,
-    //     // "mode":"cors"
-    // });
+    await fetch("https://pzz.by/api/v1/basket/save", {
+        // "credentials":"include",
+        method: 'POST',
+        // headers:{
+        //     "accept":"application/json, text/javascript, */*; q=0.01",
+        //     "accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7",
+        //     "cache-control":"no-cache","pragma":"no-cache",
+        //     "x-requested-with":"XMLHttpRequest"
+        // },
+        // "referrer":"https://pzz.by/cart",
+        // "referrerPolicy":"no-referrer-when-downgrade",
+        // "body":null,
+        // "mode":"cors"
+    });
 
     // await fetch("https://pzz.by/api/v1/basket", {"credentials":"include","headers":{"accept":"application/json, text/javascript, */*; q=0.01","accept-language":"en,ru;q=0.9,ru-RU;q=0.8,en-US;q=0.7","cache-control":"no-cache","pragma":"no-cache","x-requested-with":"XMLHttpRequest"},"referrer":"https://pzz.by/cart","referrerPolicy":"no-referrer-when-downgrade","body":null,"method":"GET","mode":"cors"});
-    // await fetch('https://pzz.by/api/v1/basket');
+    await fetch('https://pzz.by/api/v1/basket');
 };
 
 const getLisizzaHousesCollection = async streetId => {
@@ -171,6 +174,7 @@ class UserEmulatorService {
     }
 
     async performOrder(orderDetails) {
+        console.log(orderDetails.selectedPizza)
         const { size, selectedPizza: { id }, street: { title }, house, name, number, flat } = orderDetails;
         await this.page.evaluate(deliveryRequestsTrigger, size, id, title, house, name, number, flat);
     }
