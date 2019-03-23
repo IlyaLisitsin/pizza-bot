@@ -15,7 +15,6 @@ const options = {
 const FuseSearchService = (streetsCollection, userInput) => {
     const fuse = new Fuse(Object.values(streetsCollection), options);
     const resultWithIDs = fuse.search(userInput);
-    // return Array.from(new Set(resultWithIDs.map(item => item.title)))
     return resultWithIDs
 };
 

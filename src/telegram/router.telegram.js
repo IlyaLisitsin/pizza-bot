@@ -1,6 +1,11 @@
 const Router = require('telegraf/router');
 
-const { houseVariantsMarkupGenerator, pizzaListMarkupGenerator, pizzaSizeMarkupGenerator, numberMaurkupGenerator } = require('./markup.telegram');
+const {
+    houseVariantsMarkupGenerator,
+    pizzaListMarkupGenerator,
+    pizzaSizeMarkupGenerator,
+    numberMaurkupGenerator
+} = require('./markup.telegram');
 
 const replyWithPhoto = (ctx, path) => {
     ctx.replyWithChatAction('upload_photo');
@@ -36,7 +41,7 @@ router.on('phone-number-action', async ctx => {
     }
     else ctx.session.number += ctx.state.value;
     editPhoneNumber(ctx)
-})
+});
 
 router.on('chose-street-action', async ctx => {
     const streetParts = ctx.state.value.split('+');
@@ -104,8 +109,6 @@ router.on('chose-pizza-size-action', async ctx => {
     if (ctx.session.selectedPizza) {
         await ctx.reply(`Выбрана ${ctx.session.size} ${ctx.session.selectedPizza.title}`);
         await ctx.reply('Осталось записать еще немного твоих данных, и все будет готово к заказу!');
-        // await ctx.scene.enter('input-name-scene');
-        // await ctx.scene.enter('create');
         await ctx.scene.enter('create');
     }
 });
