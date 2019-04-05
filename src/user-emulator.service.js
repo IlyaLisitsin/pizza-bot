@@ -24,9 +24,9 @@ const deliveryRequestsTrigger = async (size, id, street, house, name, number, fl
 
     const normalizedStreet = street.split(' ').join('+');
 
-    const requestBodyString = `name=${name}&flat=${flat}&entrance=&floor=&intercom=&comment=&preorder_date=&preorder_time=&payment=charge&renting=&phone=%2B${number}&street=${normalizedStreet}&house=${house}`;
+    const requestBodyString = `name=${name}&flat=${flat}&entrance=&floor=&intercom=&comment=&preorder_date=&preorder_time=&payment=charge&renting=&phone=${number}&street=${normalizedStreet}&house=${house}`;
 
-    const test = "name=%D0%B8%D0%BB%D1%8C%D1%8F&flat=1&entrance=&floor=&intercom=&comment=&preorder_date=&preorder_time=&payment=charge&renting=&phone=%2B375293922930&street=%D0%9B%D1%8E%D0%B1%D0%B8%D0%BC%D0%BE%D0%B2%D0%B0+%D0%BF%D1%80%D0%BE%D1%81%D0%BF.&house=33"
+    console.log(requestBodyString)
     await fetch(`https://pzz.by/api/v1/basket/update-address`, {
         method: 'POST',
         headers: {
@@ -41,9 +41,7 @@ const deliveryRequestsTrigger = async (size, id, street, house, name, number, fl
             'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
         },
         body: `type=pizza&id=${id}&size=${sizesDictionary[size]}&dough=thin`,
-    })
-        .then(res => res.json())
-        .then(res => console.log('добавил ранч', res))
+    });
 
     await fetch("https://pzz.by/api/v1/basket/save", {
         method: 'POST',
@@ -104,15 +102,13 @@ class UserEmulatorService {
     }
 
     async performOrder(orderDetails) {
-        console.log(orderDetails.selectedPizza)
         const { size, selectedPizza: { id }, street: { title }, house, name, number, flat } = orderDetails;
         await this.page.evaluate(deliveryRequestsTrigger, size, id, title, house, name, number, flat);
     }
 
     async destroy() {
-        console.log('me destroin')
         await this.browser.close();
     }
 }
 
-module.exports = UserEmulatorService
+module.exports = UserEmulatorService;

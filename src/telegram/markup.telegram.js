@@ -30,12 +30,11 @@ const numberMaurkupGenerator = actionType => Extra
     ], { columns: 5 }));
 
 // TODO: обработать ветку "в списке ничего нет" + пусой список!!
-// TODO: экранировать скобки тире и проч!
 const streetVariantsMarkupGenerator = streetVariantList => Extra
     .HTML()
     .markup(m => {
-        console.log(streetVariantList)
-        return m.inlineKeyboard(streetVariantList.map(street => m.callbackButton(street.title, `chose-street-action:${street.title}+${street.id}`)), { columns: 1 })
+        return m.inlineKeyboard(streetVariantList
+            .map(street => m.callbackButton(street.title, `chose-street-action:${street.id}`)), { columns: 1 })
     });
 
 const houseVariantsMarkupGenerator = houseVariantList => Extra

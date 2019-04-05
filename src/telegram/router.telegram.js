@@ -44,8 +44,15 @@ router.on('phone-number-action', async ctx => {
 });
 
 router.on('chose-street-action', async ctx => {
-    const streetParts = ctx.state.value.split('+');
-    ctx.session.street = { title: streetParts[0], id: streetParts[1]};
+    const id = ctx.state.value;
+
+    // console.log(324, ctx.session.streetVariantList.find(el => el.id ===))
+    // const streetParts = ctx.state.value.split('+');
+
+    if (ctx.session.streetVariantList) {
+        ctx.session.street = { title: ctx.session.streetVariantList.find(el => String(el.id) === String(id)).title, id};
+    }
+
     if (ctx.session.emulatorInstance) {
         const housesVariantList = await ctx.session.emulatorInstance.getHousesVariants(ctx.session.street.id);
         const housesListMarkup = houseVariantsMarkupGenerator(housesVariantList);
@@ -56,8 +63,8 @@ router.on('chose-street-action', async ctx => {
 router.on('chose-house-action', async ctx => {
     ctx.session.house = ctx.state.value;
 
-    const flatNumberMarkup = numberMaurkupGenerator('flat-number-action')
-    await ctx.reply('Теперь набери номер квартиры', flatNumberMarkup)
+    const flatNumberMarkup = numberMaurkupGenerator('flat-number-action');
+    await ctx.reply('Теперь набери номер квартиры (или просто нажми "готово", если это офис)', flatNumberMarkup)
 });
 
 router.on('flat-number-action', async ctx => {

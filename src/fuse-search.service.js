@@ -15,7 +15,8 @@ const options = {
 const FuseSearchService = (streetsCollection, userInput) => {
     const fuse = new Fuse(Object.values(streetsCollection), options);
     const resultWithIDs = fuse.search(userInput);
-    return resultWithIDs
+    const distinctResult = Array.from(new Set(resultWithIDs.map(el => el.id))).map(id => ({ id, title: resultWithIDs.find(el => el.id === id).title }));
+    return distinctResult
 };
 
 module.exports = FuseSearchService;

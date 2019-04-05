@@ -1,17 +1,6 @@
-const Scene = require('telegraf/scenes/base');
 const WizardScene = require("telegraf/scenes/wizard");
 
 const { streetVariantsMarkupGenerator, paymentTypeMarkup } = require('./markup.telegram');
-
-const InputStreetScene = new Scene('input-street-scene');
-InputStreetScene.enter(ctx => ctx.reply('Введи название улицы, куда будем доставлять'));
-InputStreetScene.on('text', async ctx => {
-    if (ctx.session.emulatorInstance) {
-        const streetVariantList = await ctx.session.emulatorInstance.getStreetVariants(ctx.message.text);
-        const markup = streetVariantsMarkupGenerator(streetVariantList.slice(0, 3)); // Only 10 first variants. Purpose - not to overload tg markup
-        await ctx.reply('Что-то есть в этом списке?', markup)
-    }
-});
 
 const InputInfoPart1Scene = new WizardScene(
     'input-info-1-scene',
@@ -22,7 +11,8 @@ const InputInfoPart1Scene = new WizardScene(
     async (ctx) => {
         if (ctx.session.emulatorInstance) {
             const streetVariantList = await ctx.session.emulatorInstance.getStreetVariants(ctx.message.text);
-            const markup = streetVariantsMarkupGenerator(streetVariantList.slice(0, 3)); // Only 10 first variants. Purpose - not to overload tg markup
+            ctx.session.streetVariantList = streetVariantList.slice(0, 7);
+            const markup = streetVariantsMarkupGenerator(ctx.session.streetVariantList);
             await ctx.reply('Что-то есть в этом списке?', markup);
             return ctx.scene.leave();
         }
@@ -53,7 +43,6 @@ const create = new WizardScene(
 );
 
 module.exports = {
-    InputStreetScene,
     create,
     InputInfoPart1Scene,
 };
